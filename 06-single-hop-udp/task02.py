@@ -1,14 +1,15 @@
 #! /usr/bin/env python3
-import sys
+import sys  # noqa: E402
 import os
 import argparse
 from time import sleep
 sys.path.append("../testutils")
 
-from testutils import Board
+from testutils import Board  # noqa: E402
 from iotlab import create_experiment, stop_experiment, get_nodes_addresses, \
-                   prepare_experiment
-from common import SingleHopUdpNode, single_hop_udp_run, print_results
+                   prepare_experiment  # noqa: E402
+from common import SingleHopUdpNode, single_hop_udp_run,\
+                   print_results  # noqa: E402
 
 CHANNEL = 26
 COUNT = 1000

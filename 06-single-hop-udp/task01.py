@@ -1,16 +1,17 @@
 #! /usr/bin/env python3
-sys.path.append("../testutils")
-import sys
+import sys  # noqa: E402
 import os
 import argparse
-from testutils import Board
+sys.path.append("../testutils")
+from testutils import Board  # noqa: E402
 from iotlab import create_experiment, stop_experiment, get_nodes_addresses, \
-                   prepare_experiment
-from common import SingleHopUdpNode, single_hop_udp_run, print_results
-from time import sleep
+                   prepare_experiment  # noqa: E402
+from common import SingleHopUdpNode, single_hop_udp_run,\
+                   print_results  # noqa: E402
+from time import sleep  # noqa: E402
 
 CHANNEL = 26
-COUNT = 1000
+COUNT = 10
 INTERVAL_US = 1000000
 PORT = 1337
 PAYLOAD_SIZE = 1024
@@ -38,6 +39,7 @@ if __name__ == '__main__':
 
     # Create IoTLAB experiment
     if not exp_id:
+        print('creating experiment')
         exp_id = create_experiment(2)
         addr = get_nodes_addresses(exp_id)
     else:
@@ -54,8 +56,8 @@ if __name__ == '__main__':
         packets_received = single_hop_udp_run(source, dest, CHANNEL, COUNT,
                                               INTERVAL_US, PORT, PAYLOAD_SIZE)
 
-        assert((COUNT - packets_received) / COUNT * 100 < TOLERANCE)
         print_results(COUNT, packets_received, TOLERANCE)
+        assert((COUNT - packets_received) / COUNT * 100 < TOLERANCE)
         print("OK")
 
     except Exception as e:
