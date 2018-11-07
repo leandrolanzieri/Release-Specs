@@ -5,8 +5,8 @@ import re
 
 IOTLAB_SITE="grenoble"
 
-def create_experiment(nodes):
-    output = pexpect.run('make BOARD=iotlab-m3 IOTLAB_NODES={} IOTLAB_SITE={} iotlab-exp'.format(nodes, IOTLAB_SITE), timeout=600, encoding="utf-8")
+def create_experiment(nodes, duration = 30):
+    output = pexpect.run('make BOARD=iotlab-m3 IOTLAB_NODES={} IOTLAB_SITE={} IOTLAB_DURATION={} iotlab-exp'.format(nodes, IOTLAB_SITE, duration), timeout=600, encoding="utf-8")
 
 
     m = re.search('Waiting that experiment ([0-9]+) gets in state Running', output)
@@ -17,6 +17,14 @@ def create_experiment(nodes):
         print("Experiment id could not be parsed")
         return None
     return expId
+
+def prepare_experiment(exp_id):
+    addr = get_nodes_addresses(exp_id)
+
+    for a in addr:
+        output = pexpect.run('make BOARD=iotlab-m3 IOTLAB_NODE={} flash'.format(a), timeout=600, encoding="utf-8")
+
+    return addr
 
 def stop_experiment(exp_id):
     subprocess.check_call(['iotlab-experiment', 'stop', '-i', str(exp_id)])
