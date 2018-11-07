@@ -8,8 +8,9 @@ import subprocess
 class Board:
     def __init__(self, cmd):
         self.logger = io.StringIO()
-        self.pexpect = pexpect.spawnu(cmd, codec_errors='replace', timeout=30,
-                                      logfile=self.logger)
+        self.pexpect = pexpect.spawnu(
+                cmd, codec_errors='replace', timeout=30,
+                logfile=self.logger)
         self.pexpect.setecho(False)
 
     def reboot(self):
@@ -27,5 +28,4 @@ class Board:
 
 
 def bootstrap(board):
-    make = subprocess.check_call(["make", "BOARD={}".format(board), "clean",
-                                  "all"])
+    subprocess.check_call(["make", "BOARD={}".format(board), "clean", "all"])
