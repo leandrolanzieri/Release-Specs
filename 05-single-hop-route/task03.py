@@ -28,19 +28,25 @@ try:
     native_cmd = "make PORT={} BOARD=native term"
     source = SingleHopNode(native_cmd.format("tap0"))
     dest = SingleHopNode(native_cmd.format("tap1"))
-    for i in range(N):
-        ip_src =  "beef::2/64"
-        ip_dest =  "beef::1/64"
-        src_route = "beef::/64"
-        dest_route = "beef::/64"
-        disable_rdv = True
-        count = 10
-        tolerance = 1
 
-        packet_loss = single_hop_run(source, dest, ip_src, ip_dest, src_route, dest_route, disable_rdv, count)
-        results.append(packet_loss)
+    ip_src =  "beef::2/64"
+    ip_dest =  "beef::1/64"
+    src_route = "beef::/64"
+    dest_route = "beef::/64"
+    disable_rdv = True
+    count = 10
+    tolerance = 1
+
+    for i in range(N):
+        source.reboot()
+        dest.reboot()
+
+        packet_loss, buf_source, buf_dest = single_hop_run(source, dest, ip_src, ip_dest, src_route, dest_route, disable_rdv, count)
+        results.append([packet_loss, buf_source, buf_dest])
 
         assert(packet_loss < tolerance)
+        assert(buf_source == True)
+        assert(buf_dest == True)
         print("OK")
 
 except Exception as e:
