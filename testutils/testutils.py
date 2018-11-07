@@ -3,7 +3,6 @@ import pexpect
 import signal
 import io
 import subprocess
-import sys
 
 
 class Board:

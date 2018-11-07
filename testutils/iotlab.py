@@ -64,14 +64,15 @@ class IoTLABExperimentError(Exception):
 
 
 class IoTLABExperiment(object):
-    def __init__(self, name, nodes):
+    def __init__(self, name, nodes, duration=30):
         self.nodes = nodes
         self.name = name
         self.exp_id = None
         try:
             self.exp_id = subprocess.check_output(
                     ["iotlab-experiment", "--jmespath", "@.id",
-                        "--format", "int", "submit", "-n", name, "-d", "30"] +
+                        "--format", "int", "submit", "-n", name, "-d",
+                        str(duration)] +
                     [node.exp_param for node in nodes],
                     stderr=subprocess.PIPE
                 ).strip().decode("utf-8")

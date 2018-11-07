@@ -4,14 +4,13 @@ import os
 import argparse
 sys.path.append("../testutils")
 from testutils import Board  # noqa: E402
-from iotlab import create_experiment, stop_experiment, get_nodes_addresses, \
-                   prepare_experiment  # noqa: E402
+from iotlab import IoTLABNode, IoTLABExperiment  # noqa: E402
 from common import SingleHopUdpNode, single_hop_udp_run,\
                    print_results  # noqa: E402
 from time import sleep  # noqa: E402
 
 CHANNEL = 26
-COUNT = 10
+COUNT = 1000
 INTERVAL_US = 1000000
 PORT = 1337
 PAYLOAD_SIZE = 1024
@@ -24,11 +23,9 @@ if __name__ == '__main__':
     p.add_argument('riotbase', nargs='?',
                    help='Location of RIOT folder')
     p.add_argument('-d', '--iotlab_dur', help='IOTLAB experiment duration')
-    p.add_argument('-i', '--iotlab_exp', help='IOTLAB experiment id')
     args = p.parse_args()
 
     riotbase = args.riotbase
-    exp_id = args.iotlab_exp
     exp_dur = args.iotlab_dur or EXPERIMENT_DURATION
 
     if not riotbase:
@@ -37,19 +34,16 @@ if __name__ == '__main__':
 
     os.chdir(os.path.join(riotbase, "tests/gnrc_udp"))
 
-    # Create IoTLAB experiment
-    if not exp_id:
-        print('creating experiment')
-        exp_id = create_experiment(2)
-        addr = get_nodes_addresses(exp_id)
-    else:
-        addr = prepare_experiment(exp_id)
+    exp = IoTLABExperiment("RIOT-release-test-06-01",
+                           [IoTLABNode(extra_modules=["gnrc_pktbuf_cmd"]),
+                            IoTLABNode(extra_modules=["gnrc_pktbuf_cmd"])])
 
     try:
+        addr = exp.nodes_addresses
         iotlab_cmd = "make IOTLAB_NODE={} BOARD=iotlab-m3 term"
         source = SingleHopUdpNode(iotlab_cmd.format(addr[0]))
         dest = SingleHopUdpNode(iotlab_cmd.format(addr[1]))
-        sleep(3)
+
         source.reboot()
         dest.reboot()
 
@@ -65,5 +59,4 @@ if __name__ == '__main__':
         print("Test failed!")
         pass
 
-    if not args.iotlab_exp:
-        stop_experiment(exp_id)
+        exp.stop()
