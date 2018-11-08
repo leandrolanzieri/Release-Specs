@@ -34,12 +34,11 @@ if __name__ == '__main__':
 
     os.chdir(os.path.join(riotbase, "tests/gnrc_udp"))
 
-    exp = IoTLABExperiment("RIOT-release-test-06-01",
-                           [IoTLABNode(extra_modules=["gnrc_pktbuf_cmd"]),
-                            IoTLABNode(extra_modules=["gnrc_pktbuf_cmd"])],
-                           duration=exp_dur)
-
     try:
+        exp = IoTLABExperiment("RIOT-release-test-06-01",
+                               [IoTLABNode(extra_modules=["gnrc_pktbuf_cmd"]),
+                                IoTLABNode(extra_modules=["gnrc_pktbuf_cmd"])],
+                               duration=exp_dur)
         addr = exp.nodes_addresses
         iotlab_cmd = "make IOTLAB_NODE={} BOARD=iotlab-m3 term"
         source = SingleHopUdpNode(iotlab_cmd.format(addr[0]))

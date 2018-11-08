@@ -55,6 +55,16 @@ class GNRC:
         assert (int(_port) == port) and (int(_payload) == payload_size), \
             "UDP send error"
 
+    def udp_receive(self, count):
+        pkts_received = 0
+        for c in range(0, count):
+            try:
+                self.pexpect.expect("Packets received: (?P<packets>[:0-9]+)")
+                pkts_received = int(self.pexpect.match.group('packets'))
+            except Exception as e:
+                break
+        return pkts_received
+
     def set_channel(self, iface, channel):
         self.pexpect.sendline("ifconfig {} set channel {}".format(iface,
                                                                   channel))

@@ -38,10 +38,6 @@ def single_hop_udp_run(source, dest, channel, count, interval_us, port, payload_
     source.udp_send(ip_dest, port, count = count, \
                     payload_size = payload_size, delay_us = interval_us)
 
-    pkts_received = 0
+    pkts_received = dest.udp_receive(count)
 
-    for p in range(0, count):
-        dest.pexpect.expect("Packets received: (?P<packets>[:0-9]+)")
-        pkts_received = dest.pexpect.match.group('packets')
-
-    return int(pkts_received)
+    return pkts_received
